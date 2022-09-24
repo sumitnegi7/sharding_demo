@@ -18,7 +18,7 @@
  🥊 npm start
 
 #### Some refactoring is needed 
-
+(Note: Create 3 shards of postgres in your localhost see the port mapping in the index.js)
 
 ## Badges
 
