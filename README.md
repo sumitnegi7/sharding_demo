@@ -17,7 +17,7 @@
 
  🥊 npm start
 
-#### Some refactoring is needed 
+You can use the init.sql file to create tables for multiple files using Dockerfile 
 (Note: Create 3 shards of postgres in your localhost see the port mapping in the index.js)
 
 ## Badges
