@@ -42,8 +42,11 @@ connect()
 app.get("/:urlId", async(req,res) =>{
 console.log(req.params.urlId)
     const urlId = req.params.urlId;
+    if(!urlId){
+        res.status(400).send({"msg":"Invalid UrlId"})
+    }
     const server= hr.get(urlId)
-    console.log(server,"🔥 🔥 🔥 ") 
+
     try {
         const result = await clients[server].query("SELECT * FROM URL_TABLE WHERE URL_ID = $1",[urlId]);
         console.log(result)
@@ -53,27 +56,33 @@ console.log(req.params.urlId)
                 "url": result.rows[0],
                 "server":server
             })
+        } else{
+            res.status(404).send({"msg":"Url not found"})
         }
      } catch (error) {
          console.error(error)
+         res.status(500).send({"msg":"Internal server error"})
      }
+     
+
 })
 
 app.post("/", async (req,res) =>{
 
     const url = req.query.url;
+    if(!url){
+        res.status(400).send({"msg":"Invalid url"})
+    }
+    
     const hash = crypto.createHash("sha256").update(url).digest("base64")
     const urlId = hash.substring(0,5);
 
     const server = hr.get(urlId)
     try {
-       const d= await clients[server].query("INSERT INTO URL_TABLE(URL, URL_ID) VALUES ($1,$2)",[url,urlId]);
-       console.log(d)
+       await clients[server].query("INSERT INTO URL_TABLE(URL, URL_ID) VALUES ($1,$2)",[url,urlId]);
     } catch (error) {
-        console.error(error)
+        res.status(500).send({"msg":"Internal server error"})
     }
-
-   
 
     res.send({
         "urlId":urlId,
